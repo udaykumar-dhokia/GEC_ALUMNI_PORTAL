@@ -18,16 +18,16 @@ class Requests extends StatefulWidget {
 class _RequestsState extends State<Requests> {
   Map<String, dynamic>? details;
   bool _isLoading = false;
+  User? user = FirebaseAuth.instance.currentUser;
 
   void getData() async {
     try {
       setState(() {
         _isLoading = true;
       });
-      User? user = FirebaseAuth.instance.currentUser;
       final data = await FirebaseFirestore.instance
           .collection("gec")
-          .doc("admin@gecgn.ac.in")
+          .doc(user!.email)
           .get();
       print(data.data());
       setState(() {
@@ -48,7 +48,7 @@ class _RequestsState extends State<Requests> {
 
       final alumni = await FirebaseFirestore.instance
           .collection("gec")
-          .doc("admin@gecgn.ac.in")
+          .doc(user!.email)
           .collection("alumni_request")
           .where("email", isEqualTo: email)
           .get();
@@ -56,7 +56,7 @@ class _RequestsState extends State<Requests> {
         String id = alumni.docs.first.id;
         await FirebaseFirestore.instance
             .collection("gec")
-            .doc("admin@gecgn.ac.in")
+            .doc(user!.email)
             .collection("alumni_request")
             .doc(id)
             .delete();
@@ -96,7 +96,7 @@ class _RequestsState extends State<Requests> {
 
       final alumni = await FirebaseFirestore.instance
           .collection("gec")
-          .doc("admin@gecgn.ac.in")
+          .doc(user!.email)
           .collection("event_request")
           .where("title", isEqualTo: title)
           .where("date", isEqualTo: date)
@@ -105,10 +105,10 @@ class _RequestsState extends State<Requests> {
         String id = alumni.docs.first.id;
         await FirebaseFirestore.instance
             .collection("gec")
-            .doc("admin@gecgn.ac.in")
+            .doc(user!.email)
             .collection("event_request")
             .doc(id)
-            .delete();
+            .update({"isVerified": true});
       }
       CherryToast.success(
         animationType: AnimationType.fromTop,
@@ -208,7 +208,7 @@ class _RequestsState extends State<Requests> {
                                         StreamBuilder(
                                           stream: FirebaseFirestore.instance
                                               .collection("gec")
-                                              .doc("admin@gecgn.ac.in")
+                                              .doc(user!.email)
                                               .collection("alumni_request")
                                               .snapshots(),
                                           builder: (context,
@@ -341,8 +341,9 @@ class _RequestsState extends State<Requests> {
                                         StreamBuilder(
                                             stream: FirebaseFirestore.instance
                                                 .collection("gec")
-                                                .doc("admin@gecgn.ac.in")
+                                                .doc(user!.email)
                                                 .collection("event_request")
+                                                .where("isVerified", isEqualTo: false)
                                                 .snapshots(),
                                             builder: (context,
                                                 AsyncSnapshot<QuerySnapshot>
