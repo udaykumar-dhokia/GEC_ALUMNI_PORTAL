@@ -94,7 +94,6 @@ class _InstituteAppBarState extends State<InstituteAppBar> {
                 children: [
                   InkWell(
                     onTap: () {
-                      FirebaseAuth.instance.signOut();
                       Navigator.push(
                         context,
                         PageRouteBuilder(
@@ -132,7 +131,6 @@ class _InstituteAppBarState extends State<InstituteAppBar> {
                   ),
                   InkWell(
                     onTap: () {
-                      FirebaseAuth.instance.signOut();
                       Navigator.push(
                         context,
                         PageRouteBuilder(
@@ -207,7 +205,6 @@ class _InstituteAppBarState extends State<InstituteAppBar> {
                   ),
                   InkWell(
                     onTap: () {
-                      FirebaseAuth.instance.signOut();
                       Navigator.push(
                         context,
                         PageRouteBuilder(

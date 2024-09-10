@@ -108,119 +108,167 @@ class _EventState extends State<Event> {
                   toolbarHeight: height * 0.1,
                   titleFontSize: width * 0.02,
                 ),
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('alumni')
-                          .doc(alumniData["email"])
-                          .collection("events")
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const SliverFillRemaining(
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-                    
-                        if (snapshot.hasError) {
-                          return SliverFillRemaining(
-                            child: Center(child: Text('Error: ${snapshot.error}')),
-                          );
-                        }
-                    
-                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return const SliverFillRemaining(
-                            child: Center(child: Text('No events available')),
-                          );
-                        }
-                    
-                        final events = snapshot.data!.docs;
-                    
-                        return SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              final event =
-                                  events[index].data() as Map<String, dynamic>;
-                              final eventId =
-                                  events[index].id; // Get the document ID
-                              final title = event['title'] ?? 'No title';
-                              final description =
-                                  event['description'] ?? 'No description';
-                              final venue = event['venue'] ?? 'No venue';
-                              final date = event['date'] ?? 'No date';
-                              final accepted = event['isVerified'];
-                    
-                              return Card(
-                                margin: const EdgeInsets.all(10),
-                                elevation: 5,
-                                child: ListTile(
-                                  contentPadding: const EdgeInsets.all(15),
-                                  title: Text(
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('alumni')
+                      .doc(alumniData["email"])
+                      .collection("events")
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    // Loading state
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const SliverFillRemaining(
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    // Error state
+                    if (snapshot.hasError) {
+                      return SliverFillRemaining(
+                        child: Center(
+                          child: Text(
+                            'Error: ${snapshot.error}',
+                            style: GoogleFonts.epilogue(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    // No events available
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return const SliverFillRemaining(
+                        child: Center(
+                          child: Text(
+                            'No events available',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    // Data is available
+                    final events = snapshot.data!.docs;
+
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final event =
+                              events[index].data() as Map<String, dynamic>;
+                          final eventId = events[index].id;
+                          final title = event['title'] ?? 'No title';
+                          final description =
+                              event['description'] ?? 'No description';
+                          final venue = event['venue'] ?? 'No venue';
+                          final date = event['date'] ?? 'No date';
+                          final isAccepted = event['isVerified'] ?? false;
+
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 10),
+                            elevation: 6,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
                                     title,
                                     style: GoogleFonts.epilogue(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Colors.black87,
                                     ),
                                   ),
-                                  subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    'Description: $description',
+                                    style: GoogleFonts.epilogue(
+                                      fontSize: 16,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    'Venue: $venue',
+                                    style: GoogleFonts.epilogue(
+                                      fontSize: 16,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    'Date: $date',
+                                    style: GoogleFonts.epilogue(
+                                      fontSize: 16,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Description: $description',
-                                        style: GoogleFonts.epilogue(),
+                                        'Approval: ${isAccepted ? "Accepted" : "Pending"}',
+                                        style: GoogleFonts.epilogue(
+                                          fontWeight: FontWeight.w600,
+                                          color: isAccepted
+                                              ? Colors.green
+                                              : Colors.orange,
+                                        ),
                                       ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        'Venue: $venue',
-                                        style: GoogleFonts.epilogue(),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        'Date: $date',
-                                        style: GoogleFonts.epilogue(),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        'Approval: ${accepted ? "Accepted" : "Pending"}',
-                                        style: GoogleFonts.epilogue(),
+                                      IconButton(
+                                        icon: const Icon(Icons.delete,
+                                            color: Colors.red),
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: const Text('Delete Event'),
+                                              content: const Text(
+                                                  'Are you sure you want to delete this event?'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.of(context)
+                                                          .pop(),
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    deleteEvent(eventId);
+                                                  },
+                                                  child: const Text('Delete'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ],
                                   ),
-                                  trailing: IconButton(
-                                    icon:
-                                        const Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: const Text('Delete Event'),
-                                          content: const Text(
-                                              'Are you sure you want to delete this event?'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                              child: const Text('Cancel'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                                deleteEvent(eventId);
-                                              },
-                                              child: const Text('Delete'),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                            childCount: events.length,
-                          ),
-                        );
-                      },
-                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        childCount: events.length,
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           );

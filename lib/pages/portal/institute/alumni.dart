@@ -17,13 +17,13 @@ class _AlumniState extends State<Alumni> {
   Map<String, dynamic>? details;
   bool _isLoading = false;
   List<Map<String, dynamic>> alumni = [];
+  User? user = FirebaseAuth.instance.currentUser;
 
   void getData() async {
     try {
       setState(() {
         _isLoading = true;
       });
-      User? user = FirebaseAuth.instance.currentUser;
       final data = await FirebaseFirestore.instance
           .collection("gec")
           .doc(user!.email)
@@ -42,9 +42,14 @@ class _AlumniState extends State<Alumni> {
 
       setState(() {
         details = data.data();
+      });
+      setState(() {
         _isLoading = false;
       });
     } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       return;
     }
   }
@@ -84,7 +89,7 @@ class _AlumniState extends State<Alumni> {
                 SliverList(
                     delegate: SliverChildListDelegate([
                   Container(
-                    height: height/1.5,
+                    height: height / 1.5,
                     padding: const EdgeInsets.only(left: 15, right: 15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +143,7 @@ class _AlumniState extends State<Alumni> {
                                 ),
                               ],
                             ),
-                             for (var a in alumni)
+                            for (var a in alumni)
                               TableRow(
                                 children: [
                                   Padding(
@@ -154,14 +159,14 @@ class _AlumniState extends State<Alumni> {
                                       style: GoogleFonts.manrope(),
                                     ), // Display the total alumni count
                                   ),
-                                   Padding(
+                                  Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       a['enrollment'].toString(),
                                       style: GoogleFonts.manrope(),
                                     ), // Display the total alumni count
                                   ),
-                                   Padding(
+                                  Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       a['email'].toString(),
@@ -175,7 +180,6 @@ class _AlumniState extends State<Alumni> {
                       ],
                     ),
                   ),
-
                   Footer(),
                 ]))
               ],
