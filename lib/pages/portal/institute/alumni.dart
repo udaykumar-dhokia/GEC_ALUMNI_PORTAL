@@ -26,7 +26,7 @@ class _AlumniState extends State<Alumni> {
       User? user = FirebaseAuth.instance.currentUser;
       final data = await FirebaseFirestore.instance
           .collection("gec")
-          .doc("admin@gecgn.ac.in")
+          .doc(user!.email)
           .get();
 
       final alumniData = await FirebaseFirestore.instance

@@ -18,27 +18,27 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   bool _isLoading = false;
   int totalAlumni = 0;
   int? totalEvents;
+  User? user = FirebaseAuth.instance.currentUser;
 
   void getData() async {
     try {
       setState(() {
         _isLoading = true;
       });
-      User? user = FirebaseAuth.instance.currentUser;
       final data = await FirebaseFirestore.instance
           .collection("gec")
-          .doc("admin@gecgn.ac.in")
+          .doc(user!.email)
           .get();
 
       final atotal = await FirebaseFirestore.instance
           .collection("alumni")
           // .where("college", isEqualTo: data["name"])
-          .where("college", isEqualTo: "admin@gecgn.ac.in")
+          .where("college", isEqualTo: user!.email)
           .get();
 
       final etotal = await FirebaseFirestore.instance
           .collection("gec")
-          .doc("admin@gecgn.ac.in")
+          .doc(user!.email)
           .collection("events")
           .get();
 
@@ -130,7 +130,9 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 10,),
+                            const SizedBox(
+                              width: 10,
+                            ),
                             Container(
                               padding: const EdgeInsets.only(
                                   top: 15, left: 15, right: 15, bottom: 15),
@@ -151,7 +153,9 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    totalEvents!=null? totalEvents.toString() : "0",
+                                    totalEvents != null
+                                        ? totalEvents.toString()
+                                        : "0",
                                     style: GoogleFonts.manrope(
                                         fontSize: width * 0.03,
                                         fontWeight: FontWeight.bold),
@@ -159,7 +163,9 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 10,),
+                            const SizedBox(
+                              width: 10,
+                            ),
                             Container(
                               padding: const EdgeInsets.only(
                                   top: 15, left: 15, right: 15, bottom: 15),
@@ -180,7 +186,9 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    totalEvents!=null? "₹ ${totalEvents.toString()}" : "₹ 0.00",
+                                    totalEvents != null
+                                        ? "₹ ${totalEvents.toString()}"
+                                        : "₹ 0.00",
                                     style: GoogleFonts.manrope(
                                         fontSize: width * 0.03,
                                         fontWeight: FontWeight.bold),
