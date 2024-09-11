@@ -32,7 +32,6 @@ class Dashboard extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Add your event widgets here
                 Container(
                   padding: EdgeInsets.all(width * 0.05),
                   child: Column(

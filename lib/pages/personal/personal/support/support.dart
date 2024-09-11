@@ -29,7 +29,6 @@ class _SupportState extends State<Support> {
       _isProcessing = true;
     });
 
-    // Update the alumni's donation amount
     await FirebaseFirestore.instance
         .collection("alumni")
         .doc(user!.email)
@@ -37,20 +36,18 @@ class _SupportState extends State<Support> {
       "donationAmount": FieldValue.increment(int.parse(_amountController.text))
     });
 
-    String college = widget.alumniData["college"];
-    print(college);
 
-    await FirebaseFirestore.instance
-        .collection("alumni")
-        .doc(user!.email)
-        .collection("donations")
-        .add({
-      "date":
-          "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
-      "time":
-          "${DateTime.now().hour}-${DateTime.now().minute}-${DateTime.now().second}",
-      "amount": _amountController.text,
-    });
+    // await FirebaseFirestore.instance
+    //     .collection("alumni")
+    //     .doc(user!.email)
+    //     .collection("donations")
+    //     .add({
+    //   "date":
+    //       "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
+    //   "time":
+    //       "${DateTime.now().hour}-${DateTime.now().minute}-${DateTime.now().second}",
+    //   "amount": _amountController.text,
+    // });
 
     setState(() {
       _isProcessing = false;

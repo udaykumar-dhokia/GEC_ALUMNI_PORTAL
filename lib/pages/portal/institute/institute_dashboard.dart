@@ -133,11 +133,22 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Dashboard",
-                            style: GoogleFonts.manrope(
-                                fontSize: width * 0.022,
-                                fontWeight: FontWeight.bold),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Dashboard",
+                                style: GoogleFonts.manrope(
+                                    fontSize: width * 0.022,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  getData();
+                                },
+                                icon: Icon(Icons.replay_outlined),
+                              ),
+                            ],
                           ),
                           const SizedBox(
                             height: 10,
@@ -332,9 +343,9 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                                 ),
                             ],
                           ),
-                      
+
                           //Events
-                      
+
                           const SizedBox(
                             height: 20,
                           ),
@@ -426,7 +437,6 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                                 ),
                             ],
                           ),
-                      
                         ],
                       ),
                     ),
