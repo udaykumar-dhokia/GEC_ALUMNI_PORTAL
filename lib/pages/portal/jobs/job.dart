@@ -3,6 +3,7 @@ import 'package:cherry_toast/resources/arrays.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gecap/components/appbar/appbar.dart';
 import 'package:gecap/components/appbar/dbappbar.dart';
 import 'package:gecap/components/footer/footer.dart';
 import 'package:gecap/constants/color.dart';
@@ -32,7 +33,7 @@ class _JobsState extends State<Jobs> {
       backgroundColor: white,
       body: CustomScrollView(
         slivers: [
-          DBAppbar(toolbarHeight: toolbarHeight, titleFontSize: titleFontSize),
+          Appbar(toolbarHeight: toolbarHeight, titleFontSize: titleFontSize),
           SliverList(
             delegate: SliverChildListDelegate([
               Container(
