@@ -47,7 +47,7 @@ class _EventState extends State<Event> {
     setState(() {
       isLoading = true;
       errorMessage = "";
-      events.clear(); // Clear the list at the start
+      events.clear();
     });
 
     try {

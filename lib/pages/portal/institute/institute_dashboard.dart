@@ -23,7 +23,22 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   int? totalDonation;
   List<Map<String, dynamic>> events = [];
 
+  String formatDonation(int? donation) {
+    if (donation == null || donation == 0) return "₹ 0.00";
+    if (donation >= 1000000) {
+      return "₹ ${(donation / 1000000).toStringAsFixed(1)}M";
+    } else if (donation >= 100000) {
+      return "₹ ${(donation / 1000).toStringAsFixed(0)}K";
+    } else if (donation >= 10000) {
+      return "₹ ${(donation / 1000).toStringAsFixed(1)}K";
+    } else {
+      return "₹ $donation";
+    }
+  }
+
   void getData() async {
+    alumni.clear();
+    events.clear();
     try {
       setState(() {
         _isLoading = true;
@@ -228,7 +243,6 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                                   border: Border.all(),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
-                                // height: height / 4,
                                 width: width / 3 - 30,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,9 +254,8 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      totalDonation != null
-                                          ? "₹ ${totalDonation.toString()}"
-                                          : "₹ 0.00",
+                                      formatDonation(
+                                          totalDonation), // Use the formatted value
                                       style: GoogleFonts.manrope(
                                           fontSize: width * 0.03,
                                           fontWeight: FontWeight.bold),

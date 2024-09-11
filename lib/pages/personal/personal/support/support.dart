@@ -14,6 +14,7 @@ class Support extends StatefulWidget {
 
 class _SupportState extends State<Support> {
   final _amountController = TextEditingController();
+  final _upi = TextEditingController();
   bool _isProcessing = false;
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -23,37 +24,63 @@ class _SupportState extends State<Support> {
         const SnackBar(content: Text("Please enter an amount")),
       );
       return;
+    } else if (_upi.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter your UPI ID")),
+      );
+      return;
+    }
+
+    int donationAmount;
+    try {
+      donationAmount = int.parse(_amountController.text);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invalid amount entered")),
+      );
+      return;
     }
 
     setState(() {
       _isProcessing = true;
     });
 
-    await FirebaseFirestore.instance
-        .collection("alumni")
-        .doc(user!.email)
-        .update({
-      "donationAmount": FieldValue.increment(int.parse(_amountController.text))
-    });
+    try {
+      await FirebaseFirestore.instance
+          .collection("alumni")
+          .doc(user!.email)
+          .update({
+        "donationAmount": FieldValue.increment(donationAmount),
+      });
 
+      await FirebaseFirestore.instance
+          .collection("alumni")
+          .doc(user!.email)
+          .collection("donations")
+          .add({
+        "date":
+            "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
+        "time":
+            "${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}",
+        "amount": donationAmount,
+      });
 
-    // await FirebaseFirestore.instance
-    //     .collection("alumni")
-    //     .doc(user!.email)
-    //     .collection("donations")
-    //     .add({
-    //   "date":
-    //       "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
-    //   "time":
-    //       "${DateTime.now().hour}-${DateTime.now().minute}-${DateTime.now().second}",
-    //   "amount": _amountController.text,
-    // });
+      setState(() {
+        _isProcessing = false;
+      });
 
-    setState(() {
-      _isProcessing = false;
-    });
+      _showPaymentResultDialog(success: true);
+    } catch (e) {
+      setState(() {
+        _isProcessing = false;
+      });
 
-    _showPaymentResultDialog(success: true);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Payment failed: $e")),
+      );
+
+      _showPaymentResultDialog(success: false);
+    }
   }
 
   void _showPaymentResultDialog({required bool success}) {
@@ -82,6 +109,16 @@ class _SupportState extends State<Support> {
     return Scaffold(
       backgroundColor: white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: white,
+          ),
+        ),
         backgroundColor: Colors.green,
         title: Text(
           "Support Your College",
@@ -98,6 +135,29 @@ class _SupportState extends State<Support> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
+              "Enter your UPI  ID and amount to proceed with the payment.",
+              style: GoogleFonts.manrope(
+                  fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              cursorColor: black,
+              controller: _upi,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "UPI",
+                labelStyle: GoogleFonts.manrope(color: black),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: const BorderSide(color: Colors.green),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
               "Enter the amount you would like to donate:",
               style: GoogleFonts.manrope(
                   fontSize: 18, fontWeight: FontWeight.bold),
@@ -112,7 +172,7 @@ class _SupportState extends State<Support> {
                 labelStyle: GoogleFonts.manrope(color: black),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(color: Colors.green),
+                  borderSide: const BorderSide(color: Colors.green),
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
