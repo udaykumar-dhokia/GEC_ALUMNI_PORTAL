@@ -138,7 +138,6 @@ class _EventState extends State<Event> {
                       );
                     }
 
-                    // No events available
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                       return const SliverFillRemaining(
                         child: Center(
@@ -154,7 +153,6 @@ class _EventState extends State<Event> {
                       );
                     }
 
-                    // Data is available
                     final events = snapshot.data!.docs;
 
                     return SliverList(
@@ -171,6 +169,7 @@ class _EventState extends State<Event> {
                           final isAccepted = event['isVerified'] ?? false;
 
                           return Card(
+                            color: white,
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 15, vertical: 10),
                             elevation: 6,
@@ -426,14 +425,7 @@ class CreateEventState extends State<CreateEvent> {
       ),
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            pinned: true,
-            floating: true,
-            title: DBAppbar(
-              toolbarHeight: height * 0.1, // Adjust as needed
-              titleFontSize: width * 0.02, // Adjust as needed
-            ),
-          ),
+
           SliverFillRemaining(
             hasScrollBody: false,
             child: Padding(
@@ -453,10 +445,9 @@ class CreateEventState extends State<CreateEvent> {
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    width: double.infinity, // Changed to take available space
+                    width: double.infinity,
                     child: DropdownButton<String>(
                       style: GoogleFonts.manrope(),
-                      borderRadius: BorderRadius.circular(20),
                       hint: Text(
                         "Select a College",
                         style: GoogleFonts.manrope(fontWeight: FontWeight.w600),
@@ -469,7 +460,7 @@ class CreateEventState extends State<CreateEvent> {
                         });
                       },
                       items: colleges.map((String college) {
-                        return DropdownMenuItem<String>(
+                        return DropdownMenuItem<String>(  
                           value: college,
                           child: Text(
                             college,
@@ -496,7 +487,7 @@ class CreateEventState extends State<CreateEvent> {
                           if (selectedDate != null) {
                             setState(() {
                               _date.text = "${selectedDate.toLocal()}"
-                                  .split(' ')[0]; // Format date as needed
+                                  .split(' ')[0];
                             });
                           }
                         },

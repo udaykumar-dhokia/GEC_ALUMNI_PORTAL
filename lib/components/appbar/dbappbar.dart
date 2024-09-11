@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gecap/pages/personal/personal/dashboard/dashboard.dart';
 import 'package:gecap/pages/personal/personal/event/event.dart';
 import 'package:gecap/pages/personal/personal/profile/profile.dart';
+import 'package:gecap/pages/personal/personal/support/support.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DBAppbar extends StatefulWidget {
@@ -16,6 +19,34 @@ class DBAppbar extends StatefulWidget {
 }
 
 class _DBAppbarState extends State<DBAppbar> {
+  Map<String, dynamic>? details;
+  Map<String, dynamic>? alumniData;
+  bool _isLoading = false;
+  User? user = FirebaseAuth.instance.currentUser;
+  
+   void getData() async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      final data = await FirebaseFirestore.instance
+          .collection("gec")
+          .doc(user!.email)
+          .get();
+
+       final data2 = await FirebaseFirestore.instance
+          .collection("alumni")
+          .doc(user!.email)
+          .get();
+      setState(() {
+        details = data.data();
+        alumniData = data2.data();
+        _isLoading = false;
+      });
+    } catch (e) {
+      return;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -123,7 +154,7 @@ class _DBAppbarState extends State<DBAppbar> {
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
-                                  Event(),
+                                  const Event(),
                           transitionsBuilder:
                               (context, animation, secondaryAnimation, child) {
                             const begin = 0.0;
@@ -151,6 +182,41 @@ class _DBAppbarState extends State<DBAppbar> {
                     ),
                   ),
                   const SizedBox(width: 10),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  Support(alumniData: alumniData,),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            const begin = 0.0;
+                            const end = 1.0;
+                            const curve = Curves.easeInOut;
+
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            var fadeAnimation = animation.drive(tween);
+
+                            return FadeTransition(
+                              opacity: fadeAnimation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Support",
+                      style: GoogleFonts.manrope(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
                 ],
               ),
               Row(
@@ -162,15 +228,13 @@ class _DBAppbarState extends State<DBAppbar> {
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) {
-                            // Example of handling parsing errors
                             String passoutStr =
-                                "passout"; // Replace with actual data
+                                "passout";
                             int passoutYear;
 
                             try {
                               passoutYear = int.parse(passoutStr);
                             } catch (e) {
-                              // Handle the parsing error
                               print("Error parsing passout year: $e");
                               passoutYear = 0;
                             }

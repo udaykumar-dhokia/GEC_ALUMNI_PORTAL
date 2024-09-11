@@ -17,6 +17,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   Map<String, dynamic>? details;
   bool _isLoading = false;
   int totalAlumni = 0;
+  List<Map<String, dynamic>> alumni = [];
   int? totalEvents;
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -27,24 +28,38 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
       });
       final data = await FirebaseFirestore.instance
           .collection("gec")
-          .doc(user!.email)
+          // .doc(user!.email)
+          .doc("admin@gecgn.ac.in")
           .get();
 
       final atotal = await FirebaseFirestore.instance
           .collection("alumni")
-          // .where("college", isEqualTo: data["name"])
-          .where("college", isEqualTo: user!.email)
+          .where("college", isEqualTo: data["name"])
+          // .where("college", isEqualTo: user!.email)
           .get();
 
       final etotal = await FirebaseFirestore.instance
           .collection("gec")
-          .doc(user!.email)
+          // .doc(user!.email)
+          .doc("admin@gecgn.ac.in")
           .collection("events")
           .get();
 
       if (etotal.docs.isNotEmpty) {
         setState(() {
           totalEvents = etotal.size;
+        });
+      }
+
+      final alumniData = await FirebaseFirestore.instance
+          .collection("alumni")
+          .where("college", isEqualTo: data["name"])
+          .limit(5)
+          .get();
+
+      for (var doc in alumniData.docs) {
+        setState(() {
+          alumni.add(doc.data());
         });
       }
 
@@ -94,11 +109,20 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                     name: details!["name"]),
                 SliverList(
                     delegate: SliverChildListDelegate([
-                  Padding(
+                  Container(
+                    height: height,
                     padding: const EdgeInsets.only(
                         left: 15, right: 15, bottom: 15, top: 15),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          "Dashboard",
+                          style: GoogleFonts.manrope(
+                              fontSize: width * 0.022,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -196,6 +220,97 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                                 ],
                               ),
                             ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Alumni",
+                              style: GoogleFonts.manrope(
+                                  fontSize: width * 0.02,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.arrow_forward_ios_outlined),
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Table(
+                          border: TableBorder.all(),
+                          children: [
+                            TableRow(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Name",
+                                    style: GoogleFonts.manrope(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("Passout",
+                                      style: GoogleFonts.manrope(
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("Enrollment",
+                                      style: GoogleFonts.manrope(
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("Email",
+                                      style: GoogleFonts.manrope(
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                ),
+                              ],
+                            ),
+                            for (var a in alumni)
+                              TableRow(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(a['name'] ?? 'No Name',
+                                        style: GoogleFonts.manrope()),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      a['passout'].toString(),
+                                      style: GoogleFonts.manrope(),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      a['enrollment'].toString(),
+                                      style: GoogleFonts.manrope(),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      a['email'].toString(),
+                                      style: GoogleFonts.manrope(),
+                                    ),
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
                       ],

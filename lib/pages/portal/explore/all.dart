@@ -1,23 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gecap/components/appbar/appbar.dart';
 import 'package:gecap/components/appbar/institute_appbar.dart';
 import 'package:gecap/components/footer/footer.dart';
 import 'package:gecap/constants/color.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Alumni extends StatefulWidget {
-  const Alumni({super.key});
+class All extends StatefulWidget {
+  String name;
+  All({super.key, required this.name});
 
   @override
-  State<Alumni> createState() => _AlumniState();
+  State<All> createState() => _AllState();
 }
 
-class _AlumniState extends State<Alumni> {
+class _AllState extends State<All> {
   Map<String, dynamic>? details;
   bool _isLoading = false;
   List<Map<String, dynamic>> alumni = [];
-  User? user = FirebaseAuth.instance.currentUser;
 
   void getData() async {
     try {
@@ -25,24 +26,19 @@ class _AlumniState extends State<Alumni> {
         _isLoading = true;
       });
       final data = await FirebaseFirestore.instance
-          .collection("gec")
-          .doc(user!.email)
-          .get();
-
-      final alumniData = await FirebaseFirestore.instance
           .collection("alumni")
-          .where("college", isEqualTo: data["name"])
+          .where("college", isEqualTo: widget.name)
           .get();
 
-      for (var doc in alumniData.docs) {
+      if(data.docs.isNotEmpty){
+       for(var doc in data.docs){
         setState(() {
           alumni.add(doc.data());
         });
+       }
       }
+      print(alumni);
 
-      setState(() {
-        details = data.data();
-      });
       setState(() {
         _isLoading = false;
       });
@@ -81,10 +77,9 @@ class _AlumniState extends State<Alumni> {
             backgroundColor: white,
             body: CustomScrollView(
               slivers: [
-                InstituteAppBar(
+                Appbar(
                   toolbarHeight: toolbarHeight,
                   titleFontSize: titleFontSize,
-                  name: details!["name"],
                 ),
                 SliverList(
                     delegate: SliverChildListDelegate([
@@ -98,7 +93,7 @@ class _AlumniState extends State<Alumni> {
                           height: 20,
                         ),
                         Text(
-                          "Alumni",
+                          "${widget.name} Alumni",
                           style: GoogleFonts.manrope(
                               fontSize: width * 0.02,
                               fontWeight: FontWeight.bold),
@@ -126,17 +121,10 @@ class _AlumniState extends State<Alumni> {
                                       style: GoogleFonts.manrope(
                                         fontWeight: FontWeight.w600,
                                       )),
-                                ),
+                                ),  
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text("Enrollment",
-                                      style: GoogleFonts.manrope(
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Email",
+                                  child: Text("Contact",
                                       style: GoogleFonts.manrope(
                                         fontWeight: FontWeight.w600,
                                       )),
@@ -156,13 +144,6 @@ class _AlumniState extends State<Alumni> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       a['passout'].toString(),
-                                      style: GoogleFonts.manrope(),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      a['enrollment'].toString(),
                                       style: GoogleFonts.manrope(),
                                     ),
                                   ),

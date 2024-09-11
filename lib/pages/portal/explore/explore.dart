@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gecap/components/appbar/appbar.dart';
 import 'package:gecap/components/footer/footer.dart';
 import 'package:gecap/constants/color.dart';
+import 'package:gecap/pages/portal/explore/all.dart';
 import 'package:gecap/pages/portal/login/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -176,6 +177,13 @@ class _ExploreState extends State<Explore> {
                                         fontWeight: FontWeight.w600,
                                       )),
                                 ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("Details",
+                                      style: GoogleFonts.manrope(
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                ),
                               ],
                             ),
                             for (var alumni in total)
@@ -184,14 +192,59 @@ class _ExploreState extends State<Explore> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(alumni['name'] ?? 'No Name',
-                                        style: GoogleFonts
-                                            .manrope()), // Display the name field
+                                        style: GoogleFonts.manrope()),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       alumni['total'].toString(),
                                       style: GoogleFonts.manrope(),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        if (alumni["total"] != 0) {
+                                          Navigator.push(
+                                            context,
+                                            PageRouteBuilder(
+                                              pageBuilder: (context, animation,
+                                                      secondaryAnimation) =>
+                                                  All(
+                                                name: alumni["name"],
+                                              ),
+                                              transitionsBuilder: (context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) {
+                                                const begin = 0.0;
+                                                const end = 1.0;
+                                                const curve = Curves.easeInOut;
+
+                                                var tween = Tween(
+                                                        begin: begin, end: end)
+                                                    .chain(CurveTween(
+                                                        curve: curve));
+                                                var fadeAnimation =
+                                                    animation.drive(tween);
+
+                                                return FadeTransition(
+                                                  opacity: fadeAnimation,
+                                                  child: child,
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Text(
+                                        "View All",
+                                        style: GoogleFonts.manrope(
+                                            color: alumni["total"] == 0
+                                                ? Colors.black45
+                                                : Colors.blue[800]),
+                                      ),
                                     ), // Display the total alumni count
                                   ),
                                 ],

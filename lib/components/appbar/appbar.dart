@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gecap/pages/portal/event/allevent.dart';
 import 'package:gecap/pages/portal/about/about.dart';
 import 'package:gecap/pages/portal/explore/explore.dart';
 import 'package:gecap/pages/portal/institute/institute_login.dart';
@@ -158,7 +159,7 @@ class _AppbarState extends State<Appbar> {
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
-                                  const Explore(),
+                                  const Event(),
                           transitionsBuilder:
                               (context, animation, secondaryAnimation, child) {
                             const begin = 0.0;

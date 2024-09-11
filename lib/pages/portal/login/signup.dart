@@ -84,21 +84,6 @@ class _SignInState extends State<SignIn> {
   String? selectedCollege;
   String? selectedYear;
 
-  Future<void> _pickProfileImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png'],
-    );
-    if (result != null) {
-      print(result);
-      setState(() {
-        _profileImage = File(result.files.single.path!);
-      });
-    } else {
-      // User canceled the picker
-      print("No file selected");
-    }
-  }
 
   void SignUp(String email, String password, final alumniData) async {
     try {
@@ -598,6 +583,7 @@ class _SignInState extends State<SignIn> {
                                                   "passout":
                                                       int.parse(selectedYear!),
                                                   "isVerified": false,
+                                                  "donationAmount": 0,
                                                 };
 
                                                 SignUp(
