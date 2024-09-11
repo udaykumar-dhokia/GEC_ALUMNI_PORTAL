@@ -112,7 +112,7 @@ class _RequestsState extends State<Requests> {
       }
       CherryToast.success(
         animationType: AnimationType.fromTop,
-        title: const Text("Alumni approved.",
+        title: const Text("Event approved.",
             style: TextStyle(color: Colors.black)),
       ).show(context);
     } catch (e) {
@@ -343,7 +343,8 @@ class _RequestsState extends State<Requests> {
                                                 .collection("gec")
                                                 .doc(user!.email)
                                                 .collection("event_request")
-                                                .where("isVerified", isEqualTo: false)
+                                                .where("isVerified",
+                                                    isEqualTo: false)
                                                 .snapshots(),
                                             builder: (context,
                                                 AsyncSnapshot<QuerySnapshot>
@@ -388,59 +389,71 @@ class _RequestsState extends State<Requests> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              "Requested by: ${data["name"]}",
-                                                              style: GoogleFonts
-                                                                  .manrope(
-                                                                fontSize:
-                                                                    width *
-                                                                        0.01,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                "Requested by: ${data["name"]}",
+                                                                style:
+                                                                    GoogleFonts
+                                                                        .manrope(
+                                                                  fontSize:
+                                                                      width *
+                                                                          0.01,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            Text(
-                                                              data["title"],
-                                                              style: GoogleFonts
-                                                                  .manrope(
-                                                                fontSize:
-                                                                    width *
-                                                                        0.01,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                              Text(
+                                                                data["title"],
+                                                                style:
+                                                                    GoogleFonts
+                                                                        .manrope(
+                                                                  fontSize:
+                                                                      width *
+                                                                          0.01,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            Text(
-                                                              "Description: ${data["description"]}",
-                                                              style: GoogleFonts
-                                                                  .manrope(),
-                                                            ),
-                                                            Text(
-                                                              "Venue: ${data["venue"].toString()}",
-                                                              style: GoogleFonts
-                                                                  .manrope(),
-                                                            ),
-                                                            Text(
-                                                              "Date: ${data["date"]}",
-                                                              style: GoogleFonts
-                                                                  .manrope(),
-                                                            ),
-                                                          ],
+                                                              Text(
+                                                                "Description: ${data["description"]}",
+                                                                style: GoogleFonts
+                                                                    .manrope(),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .clip,
+                                                              ),
+                                                              Text(
+                                                                "Venue: ${data["venue"].toString()}",
+                                                                style: GoogleFonts
+                                                                    .manrope(),
+                                                              ),
+                                                              Text(
+                                                                "Date: ${data["date"]}",
+                                                                style: GoogleFonts
+                                                                    .manrope(),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                         Row(
                                                           children: [
                                                             IconButton(
-                                                                onPressed:
-                                                                    () {
-                                                                      approveEvent(data["email"], data["title"], data["date"]);
-                                                                    },
+                                                                onPressed: () {
+                                                                  approveEvent(
+                                                                      data[
+                                                                          "email"],
+                                                                      data[
+                                                                          "title"],
+                                                                      data[
+                                                                          "date"]);
+                                                                },
                                                                 icon:
                                                                     const Icon(
                                                                   Icons.done,

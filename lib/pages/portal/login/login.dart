@@ -7,6 +7,7 @@ import 'package:gecap/components/appbar/appbar.dart';
 import 'package:gecap/components/footer/footer.dart';
 import 'package:gecap/constants/color.dart';
 import 'package:gecap/pages/personal/personal/dashboard/dashboard.dart';
+import 'package:gecap/pages/personal/personal/event/event.dart';
 import 'package:gecap/pages/portal/login/login.dart';
 import 'package:gecap/pages/portal/login/signup.dart';
 import 'package:gecap/pages/portal/mainpage/mainpage.dart';
@@ -47,7 +48,7 @@ class _LoginState extends State<Login> {
             context,
             PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
-                  const Dashboard(),
+                  const Event(),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 const begin = 0.0;

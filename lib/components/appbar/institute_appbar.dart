@@ -156,7 +156,7 @@ class _InstituteAppBarState extends State<InstituteAppBar> {
                       );
                     },
                     child: Text(
-                      "Alumni",
+                      "Alumni & Events",
                       style: GoogleFonts.manrope(
                         color: Colors.white,
                         fontSize: 16,

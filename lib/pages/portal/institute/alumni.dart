@@ -17,6 +17,7 @@ class _AlumniState extends State<Alumni> {
   Map<String, dynamic>? details;
   bool _isLoading = false;
   List<Map<String, dynamic>> alumni = [];
+  List<Map<String, dynamic>> events = [];
   User? user = FirebaseAuth.instance.currentUser;
 
   void getData() async {
@@ -38,6 +39,19 @@ class _AlumniState extends State<Alumni> {
         setState(() {
           alumni.add(doc.data());
         });
+      }
+
+      final events = await FirebaseFirestore.instance
+          .collection("gec")
+          .doc(user!.email)
+          .collection("event_request")
+          .where("isVerified", isEqualTo: true)
+          .get();
+      
+      for (var doc in events.docs){
+        setState(() {
+          this.events.add(doc.data());
+          });
       }
 
       setState(() {
@@ -89,95 +103,178 @@ class _AlumniState extends State<Alumni> {
                 SliverList(
                     delegate: SliverChildListDelegate([
                   Container(
-                    height: height / 1.5,
+                    height: height/1.5,
                     padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "Alumni",
-                          style: GoogleFonts.manrope(
-                              fontSize: width * 0.02,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Table(
-                          border: TableBorder.all(),
-                          children: [
-                            TableRow(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Name",
-                                    style: GoogleFonts.manrope(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Passout",
-                                      style: GoogleFonts.manrope(
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Enrollment",
-                                      style: GoogleFonts.manrope(
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Email",
-                                      style: GoogleFonts.manrope(
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                ),
-                              ],
-                            ),
-                            for (var a in alumni)
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "Alumni",
+                            style: GoogleFonts.manrope(
+                                fontSize: width * 0.02,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Table(
+                            border: TableBorder.all(),
+                            children: [
                               TableRow(
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text(a['name'] ?? 'No Name',
-                                        style: GoogleFonts
-                                            .manrope()),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      a['passout'].toString(),
-                                      style: GoogleFonts.manrope(),
+                                      "Name",
+                                      style: GoogleFonts.manrope(
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      a['enrollment'].toString(),
-                                      style: GoogleFonts.manrope(),
-                                    ),
+                                    child: Text("Passout",
+                                        style: GoogleFonts.manrope(
+                                          fontWeight: FontWeight.w600,
+                                        )),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      a['email'].toString(),
-                                      style: GoogleFonts.manrope(),
-                                    ),
+                                    child: Text("Enrollment",
+                                        style: GoogleFonts.manrope(
+                                          fontWeight: FontWeight.w600,
+                                        )),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Email",
+                                        style: GoogleFonts.manrope(
+                                          fontWeight: FontWeight.w600,
+                                        )),
                                   ),
                                 ],
                               ),
-                          ],
-                        ),
-                      ],
+                              for (var a in alumni)
+                                TableRow(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(a['name'] ?? 'No Name',
+                                          style: GoogleFonts.manrope()),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        a['passout'].toString(),
+                                        style: GoogleFonts.manrope(),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        a['enrollment'].toString(),
+                                        style: GoogleFonts.manrope(),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        a['email'].toString(),
+                                        style: GoogleFonts.manrope(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 50,),
+                          Text(
+                            "Events",
+                            style: GoogleFonts.manrope(
+                                fontSize: width * 0.02,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Table(
+                            border: TableBorder.all(),
+                            children: [
+                              TableRow(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Title",
+                                      style: GoogleFonts.manrope(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Description",
+                                        style: GoogleFonts.manrope(
+                                          fontWeight: FontWeight.w600,
+                                        )),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Date",
+                                        style: GoogleFonts.manrope(
+                                          fontWeight: FontWeight.w600,
+                                        )),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Is aproved?",
+                                        style: GoogleFonts.manrope(
+                                          fontWeight: FontWeight.w600,
+                                        )),
+                                  ),
+                                ],
+                              ),
+                              for (var a in events)
+                                TableRow(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(a['title'] ?? 'No Name',
+                                          style: GoogleFonts.manrope()),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        a['description'].toString(),
+                                        style: GoogleFonts.manrope(),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        a['date'].toString(),
+                                        style: GoogleFonts.manrope(),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        a['isVerified'].toString(),
+                                        style: GoogleFonts.manrope(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 50,),
+
+                        ],
+                      ),
                     ),
                   ),
                   Footer(),

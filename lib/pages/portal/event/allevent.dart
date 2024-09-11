@@ -175,7 +175,7 @@ class _EventState extends State<Event> {
             value: college,
             child: Text(
               college,
-              style: GoogleFonts.manrope(),
+              style: GoogleFonts.manrope(color: black),
             ),
           );
         }).toList(),

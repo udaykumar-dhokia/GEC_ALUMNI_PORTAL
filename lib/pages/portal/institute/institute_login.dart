@@ -64,7 +64,7 @@ class _InstituteLoginState extends State<InstituteLogin> {
       CherryToast.success(
         animationType: AnimationType.fromTop,
         title: const Text(
-          "Registration successfull",
+          "Login successfull",
           style: TextStyle(color: Colors.black),
         ),
       ).show(context);

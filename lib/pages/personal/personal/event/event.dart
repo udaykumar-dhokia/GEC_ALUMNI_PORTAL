@@ -419,13 +419,11 @@ class CreateEventState extends State<CreateEvent> {
           }
         },
         shape: const CircleBorder(),
-        backgroundColor: Colors.blue, // Change to a visible color
-        child: const Icon(Icons.check,
-            color: Colors.white), // Change icon color for visibility
+        backgroundColor: primary,
+        child: const Icon(Icons.check, color: Colors.white),
       ),
       body: CustomScrollView(
         slivers: [
-
           SliverFillRemaining(
             hasScrollBody: false,
             child: Padding(
@@ -433,15 +431,29 @@ class CreateEventState extends State<CreateEvent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 30),
+                  Text(
+                    "Event Details",
+                    style: GoogleFonts.manrope(
+                        fontSize: 24,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 20),
                   TextField(
                     controller: _title,
-                    decoration: const InputDecoration(labelText: "Event Title"),
+                    decoration: InputDecoration(
+                      labelText: "Event Title",
+                      labelStyle: GoogleFonts.manrope(),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: _description,
-                    decoration: const InputDecoration(labelText: "Description"),
+                    decoration: InputDecoration(
+                      labelText: "Description",
+                      labelStyle: GoogleFonts.manrope(),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -460,11 +472,11 @@ class CreateEventState extends State<CreateEvent> {
                         });
                       },
                       items: colleges.map((String college) {
-                        return DropdownMenuItem<String>(  
+                        return DropdownMenuItem<String>(
                           value: college,
                           child: Text(
                             college,
-                            style: GoogleFonts.manrope(),
+                            style: GoogleFonts.manrope(color: black),
                           ),
                         );
                       }).toList(),
@@ -473,21 +485,24 @@ class CreateEventState extends State<CreateEvent> {
                   const SizedBox(height: 10),
                   TextField(
                     controller: _date,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: "Date",
+                      labelStyle: GoogleFonts.manrope(),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.calendar_month_outlined),
                         onPressed: () async {
                           DateTime? selectedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
-                            firstDate: DateTime(2000),
+                            firstDate: DateTime
+                                .now(), // Prevent selection of dates before today
                             lastDate: DateTime(2101),
                           );
                           if (selectedDate != null) {
                             setState(() {
                               _date.text = "${selectedDate.toLocal()}"
-                                  .split(' ')[0];
+                                  .split(' ')[0]; // Format date to YYYY-MM-DD
                             });
                           }
                         },

@@ -40,32 +40,6 @@ class _SupportState extends State<Support> {
     String college = widget.alumniData["college"];
     print(college);
 
-    // Check if college name is being retrieved correctly
-    print("College: $college");
-
-    try {
-      final clg = await FirebaseFirestore.instance
-          .collection("gec")
-          .where("name", isEqualTo: college)
-          .limit(1)
-          .get();
-
-      if (clg.docs.isNotEmpty) {
-        String id = clg.docs.first.id;
-
-        print("College document found: $id");
-
-        await FirebaseFirestore.instance.collection("gec").doc(id).update({
-          "donationAmount":
-              FieldValue.increment(int.parse(_amountController.text))
-        });
-      } else {
-        print("No matching college document found");
-      }
-    } catch (e) {
-      print("Error querying college document: $e");
-    }
-
     await FirebaseFirestore.instance
         .collection("alumni")
         .doc(user!.email)

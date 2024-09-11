@@ -5,6 +5,7 @@ import 'package:gecap/pages/personal/personal/dashboard/dashboard.dart';
 import 'package:gecap/pages/personal/personal/event/event.dart';
 import 'package:gecap/pages/personal/personal/profile/profile.dart';
 import 'package:gecap/pages/personal/personal/support/support.dart';
+import 'package:gecap/pages/portal/login/login.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DBAppbar extends StatefulWidget {
@@ -119,7 +120,7 @@ class _DBAppbarState extends State<DBAppbar> {
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
-                                  const Dashboard(),
+                                  const Profile(),
                           transitionsBuilder:
                               (context, animation, secondaryAnimation, child) {
                             const begin = 0.0;
@@ -223,28 +224,14 @@ class _DBAppbarState extends State<DBAppbar> {
                 children: [
                   InkWell(
                     onTap: () {
+                      FirebaseAuth.instance.signOut();
                       Navigator.push(
                         context,
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) {
-                            String passoutStr =
-                                "passout";
-                            int passoutYear;
 
-                            try {
-                              passoutYear = int.parse(passoutStr);
-                            } catch (e) {
-                              print("Error parsing passout year: $e");
-                              passoutYear = 0;
-                            }
-                            return Profile(
-                              name: "name", // Replace with actual data
-                              email: "email", // Replace with actual data
-                              college: "college", // Replace with actual data
-                              enrollment:
-                                  "enrollment", // Replace with actual data
-                              passout: passoutYear,
+                            return const Login(
                             );
                           },
                           transitionsBuilder:
@@ -266,7 +253,7 @@ class _DBAppbarState extends State<DBAppbar> {
                       );
                     },
                     child: Text(
-                      "Profile",
+                      "Logout",
                       style: GoogleFonts.manrope(
                         color: Colors.white,
                         fontSize: 16,
