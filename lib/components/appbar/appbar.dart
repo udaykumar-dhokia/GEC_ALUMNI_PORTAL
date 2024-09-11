@@ -3,6 +3,7 @@ import 'package:gecap/pages/portal/event/allevent.dart';
 import 'package:gecap/pages/portal/about/about.dart';
 import 'package:gecap/pages/portal/explore/explore.dart';
 import 'package:gecap/pages/portal/institute/institute_login.dart';
+import 'package:gecap/pages/portal/jobs/job.dart';
 import 'package:gecap/pages/portal/mainpage/mainpage.dart';
 import 'package:gecap/pages/portal/login/login.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -180,6 +181,41 @@ class _AppbarState extends State<Appbar> {
                     },
                     child: Text(
                       "Events",
+                      style: GoogleFonts.manrope(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const Jobs(),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            const begin = 0.0;
+                            const end = 1.0;
+                            const curve = Curves.easeInOut;
+
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            var fadeAnimation = animation.drive(tween);
+
+                            return FadeTransition(
+                              opacity: fadeAnimation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Jobs",
                       style: GoogleFonts.manrope(
                         color: Colors.white,
                         fontSize: 16,

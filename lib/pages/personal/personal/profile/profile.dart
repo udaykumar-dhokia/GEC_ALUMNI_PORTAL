@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gecap/components/footer/footer.dart';
 import 'package:gecap/constants/color.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gecap/components/appbar/dbappbar.dart'; // Import your custom appbar
@@ -116,6 +117,7 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                       ),
+                      Footer(),
                     ],
                   ),
                 ),

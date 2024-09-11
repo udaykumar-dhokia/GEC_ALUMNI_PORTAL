@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gecap/pages/personal/personal/dashboard/dashboard.dart';
 import 'package:gecap/pages/personal/personal/event/event.dart';
+import 'package:gecap/pages/personal/personal/jobs/jobs.dart';
 import 'package:gecap/pages/personal/personal/profile/profile.dart';
 import 'package:gecap/pages/personal/personal/support/support.dart';
 import 'package:gecap/pages/portal/login/login.dart';
@@ -182,6 +183,43 @@ class _DBAppbarState extends State<DBAppbar> {
                       ),
                     ),
                   ),
+
+                  const SizedBox(width: 10),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  Jobs(),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            const begin = 0.0;
+                            const end = 1.0;
+                            const curve = Curves.easeInOut;
+
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            var fadeAnimation = animation.drive(tween);
+
+                            return FadeTransition(
+                              opacity: fadeAnimation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Jobs",
+                      style: GoogleFonts.manrope(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  
                   const SizedBox(width: 10),
                   InkWell(
                     onTap: () {
